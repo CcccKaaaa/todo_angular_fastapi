@@ -1,0 +1,8 @@
+<div>
+  <button (click)="newTask()">New task</button>
+  <div>Task list:</div>
+  @for (task of tasks; track task.id) {
+    <app-task-item [task]=task (removeTask)="removeTask($event)"/>
+  }
+</div>
+

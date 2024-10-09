@@ -1,0 +1,9 @@
+<div class="task">
+  {{ task.title }}
+  @if (task.completed) {
+    Completed
+  } @else {
+    Not Completed
+  }
+  <button (click)="removeTaskItem(task.id)">x</button>
+</div>

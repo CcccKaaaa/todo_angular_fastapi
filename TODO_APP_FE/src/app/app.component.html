@@ -1,20 +1,18 @@
 <div class="todo-container">
-  <h1>To-Do List</h1>
-
-  <!-- Add New Task -->
-  <div class="todo-input">
-    <input
-      [(ngModel)]="newTask"
-      (keyup.enter)="addTask()"
-      placeholder="Enter new task"
-      type="text"
-    />
-    <button (click)="addTask()">Add Task</button>
-
-  <div>
-    @for (task of tasks; track task.id) {
-      <li>{{task.name}} <button (click)="removeTask(task.id)">x</button></li>
-    }
+  <div class="title d-flex flex-row justify-content-center align-items-center mt-2">
+    <span class="mx-2">TO-DO LIST </span>
+    <i class="fa fa-list-alt" aria-hidden="true"></i>
   </div>
-  <i class="fa fa-user-o" aria-hidden="true"></i>
+  <div class="content-container d-flex flex-row">
+    <div class="col-6">
+      <div class="to-do-content">
+        <app-task-list/>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="to-do-content">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+</div>
   </div>
