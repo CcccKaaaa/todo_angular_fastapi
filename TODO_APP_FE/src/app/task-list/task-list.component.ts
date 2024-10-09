@@ -1,29 +1,30 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { TaskService } from '../app.todo.service'
 import { TaskItem } from '../task-item';
 
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [TaskItemComponent],
+  imports: [TaskItemComponent, FormsModule],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.css'
 })
 export class TaskListComponent {
   tasks: TaskItem[] = []
+  showCompleted: boolean = true
+
   constructor(
     private taskService: TaskService,
-    private route: ActivatedRoute,
     private router: Router) {}
 
 
   ngOnInit(): void {
     this.showTasks()
-    const taskID = this.route.snapshot.paramMap.get('id');
   }
 
   newTask() {
@@ -35,15 +36,28 @@ export class TaskListComponent {
   }
 
   showTasks() {
-    this.taskService.getTasks().subscribe((response) => {
+    this.taskService.getTasks(this.showCompleted).subscribe((response) => {
       this.tasks = response;
     });
   }
 
   removeTask(task_id: number) {
     this.taskService.removeTask(task_id).subscribe((response) => {
+      this.showTasks()
+      this.router.navigate(['/task-form/create']);
+    });
+  }
+
+  toggleTask(task: any) {
+    console.log(task)
+    this.taskService.editTask(task).subscribe((response) => {
       console.log(response)
       this.showTasks()
     });
+  }
+
+  toggleShowComplete() {
+    this.showCompleted = ! this.showCompleted
+    this.showTasks()
   }
 }

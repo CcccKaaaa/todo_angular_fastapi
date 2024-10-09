@@ -1,9 +1,21 @@
-<div class="task">
-  {{ task.title }}
-  @if (task.completed) {
-    Completed
-  } @else {
-    Not Completed
-  }
-  <button (click)="removeTaskItem(task.id)">x</button>
+
+<div class="row p-2 border-bottom align-items-center">
+  <div class="col-8 task-title" [routerLink]="['task-form/', task.id]">
+    {{ task.title }}
+  </div>
+  <div class="col-2">
+    @if (task.completed) {
+      <div class="badge badge-success">Completed</div>
+    } @else {
+      <div class="badge badge-secondary">Not Completed</div>
+    }
+  </div>
+  <div class="col-2 d-flex justify-content-center">
+      @if (task.completed) {
+        <button (click)="toggleTaskItem(task.id, !task.completed)" class="btn btn-sm btn-warning"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
+      } @else {
+        <button (click)="toggleTaskItem(task.id, !task.completed)" class="btn btn-sm btn-success"><i class="fa fa-check" aria-hidden="true"></i></button>
+      }
+      <button (click)="removeTaskItem(task.id)" class="btn btn-sm btn-danger ml-1"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
+    </div>
 </div>

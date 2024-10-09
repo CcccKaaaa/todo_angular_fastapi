@@ -9,8 +9,16 @@ export class TaskService {
   constructor(private http: HttpClient) {
   }
 
-  getTasks() {
-    return this.http.get<TaskItem[]>(this.APIURL + "get-tasks",);
+  getTasks(showCompleted:boolean) {
+    let endPoint = this.APIURL + "get-tasks/"
+    if (!showCompleted) {
+      endPoint += "?showCompleted=false"
+    }
+    return this.http.get<TaskItem[]>(endPoint);
+  }
+
+  getTask(task_id: string) {
+    return this.http.get<TaskItem>(this.APIURL + "get-task" + "/?id=" + task_id);
   }
 
   addTask(newTask: CreateTaskItem) {
@@ -18,8 +26,10 @@ export class TaskService {
   }
 
   removeTask(task_id: number) {
-    let body = new FormData();
-    body.append('task_id', task_id.toString());
-    return this.http.post(this.APIURL + "remove-task", body);
+    return this.http.post(this.APIURL + "remove-task", {id: task_id});
+  }
+
+  editTask(task: TaskItem) {
+    return this.http.post(this.APIURL + "edit-task", task);
   }
 }

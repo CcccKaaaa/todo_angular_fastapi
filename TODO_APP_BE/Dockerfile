@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 # the application crashes without emitting any logs due to buffering.
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /TODO_APP_BE
 
 # Create a non-privileged user that the app will run under.
 ARG UID=10001
@@ -36,4 +36,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the application.
-CMD ["fastapi", "vvvvvv", "main.py"]
+CMD ["fastapi", "dev", "main.py"]

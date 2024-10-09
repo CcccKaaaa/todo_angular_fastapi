@@ -13,3 +13,7 @@ class TaskCreate(TaskBase):
 
 class Task(TaskBase):
     id: int
+
+class TaskEdit(Task):
+    id: int
+    title: str | None = None

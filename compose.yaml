@@ -18,7 +18,8 @@ services:
     ports:
       - "4200:4200"
     volumes:
-      - ./TODO_APP_FE:/app
+      - ./TODO_APP_FE:/TODO_APP_FE
+      - /TODO_APP_FE/node_modules
     command: ng serve TODO_APP_FE --host 0.0.0.0 --port 4200
 
 networks:

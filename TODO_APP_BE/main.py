@@ -27,18 +27,22 @@ def get_db():
     finally:
         db.close()
 
-@app.get('/get-tasks', response_model=List[schemas.Task])
-def get_tasks(db: Session = Depends(get_db)):
-    return crud.get_tasks(db)
+@app.get('/get-tasks/', response_model=List[schemas.Task])
+def get_tasks(db: Session = Depends(get_db), showCompleted: bool = True):
+    return crud.get_tasks(db, showCompleted)
+
+@app.get('/get-task/', response_model=schemas.Task)
+def get_tasks(db: Session = Depends(get_db), id: int = 0 ):
+    return crud.get_task(db, id)
 
 @app.post('/add-task', response_model=schemas.Task)
 def add_task(task:schemas.TaskCreate, db: Session = Depends(get_db)):
     return crud.add_task(db, task)
 
 @app.post('/remove-task')
-def remove_task(task_id:int=Form(...), db: Session = Depends(get_db)):
-    return crud.remove_task(db, task_id)
+def remove_task(task:schemas.TaskEdit, db: Session = Depends(get_db)):
+    return crud.remove_task(db, task.id)
 
-@app.post('edit-task')
-def edit_task(task_id:int=Form(...), db: Session = Depends(get_db)):
-    return crud.edit_task(db,)
+@app.post('/edit-task')
+def edit_task(task:schemas.TaskEdit, db: Session = Depends(get_db)):
+    return crud.edit_task(db, task)

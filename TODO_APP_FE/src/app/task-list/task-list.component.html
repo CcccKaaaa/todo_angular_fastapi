@@ -1,8 +1,26 @@
-<div>
-  <button (click)="newTask()">New task</button>
-  <div>Task list:</div>
+<div class="p-3">
+  <div class="row justify-content-center h4"><b>TASKS</b></div>
+  <div class="row pl-4 flex-row-reverse pr-3">
+    <div>
+      <button class="btn btn-outline-info" (click)="toggleShowComplete()">
+        @if (showCompleted) {
+          Hide Completed
+        } @else {
+          Show Completed
+        }
+      </button>
+    </div>
+  </div>
+  <div class="row p-2 border-bottom h5 mb-0 bolder">
+    <div class="col-8">Task title</div>
+    <div class="col-2">Status</div>
+    <div class="col-2"></div>
+  </div>
   @for (task of tasks; track task.id) {
-    <app-task-item [task]=task (removeTask)="removeTask($event)"/>
+    <app-task-item [task]=task (removeTask)="removeTask($event)" (toggleTask)="toggleTask($event)"/>
   }
+  <div class="mt-4">
+    <button (click)="newTask()" class="btn btn-outline-primary">New task</button>
+  </div>
 </div>
 
