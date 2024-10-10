@@ -1,6 +1,10 @@
 import { Component, Input, output } from '@angular/core';
-import { TaskItem } from '../task-item'
 import { RouterLink } from '@angular/router';
+
+import { take } from 'rxjs';
+
+import { TaskItem } from '../task-item'
+import { TaskService } from '../app.todo.service'
 
 @Component({
   selector: 'app-task-item',
@@ -15,6 +19,7 @@ export class TaskItemComponent {
   toggleTask = output<TaskItem>();
   @Input() task!: TaskItem;
 
+  constructor(private taskService: TaskService) {}
 
   removeTaskItem(taskId: number) {
     this.removeTask.emit(taskId);
@@ -22,7 +27,9 @@ export class TaskItemComponent {
 
   toggleTaskItem(taskId: number) {
     this.task.completed = ! this.task.completed
-    // const current_task = {id: taskId, completed: completed} as TaskItem;
-    // this.toggleTask.emit(current_task);
+    const task_val = {id: taskId, completed: this.task.completed}
+    this.taskService.editTask(task_val).pipe(take(1)).subscribe((response) => {
+      console.log(response)
+    })
   }
 }

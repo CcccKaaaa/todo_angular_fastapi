@@ -71,11 +71,11 @@ export class TaskFormComponent {
       .subscribe({
         next: response => {
           this.myTaskForm.reset();
+          this.eventHandler.updateData();
         }, error: (error) => {
           console.log(error);
         }
       });
-    this.eventHandler.updateData();
   }
 
   editTaskForm(){
