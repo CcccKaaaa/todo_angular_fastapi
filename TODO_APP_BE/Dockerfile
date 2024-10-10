@@ -12,22 +12,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /TODO_APP_BE
 
-# Create a non-privileged user that the app will run under.
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
-
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Switch to the non-privileged user to run the application.
-USER appuser
 
 # Copy the source code into the container.
 COPY . .
