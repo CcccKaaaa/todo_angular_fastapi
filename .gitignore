@@ -20,3 +20,5 @@ lib64/
 pyvenv.cfg
 
 .vscode/
+
+sql_app.db
