@@ -1,13 +1,10 @@
-<div class="p-3">
+<div class="p-3" style="height:50vh">
   <div class="row justify-content-center h4"><b>TASKS</b></div>
-  <div class="row pl-4 flex-row-reverse pr-3">
-    <div>
+  <div class="row pl-4 pr-3">
+    <div class="my-3">
+      <button (click)="newTask()" class="btn btn-outline-primary mr-3">New task</button>
       <button class="btn btn-outline-info" (click)="toggleShowComplete()">
-        @if (showCompleted) {
-          Hide Completed
-        } @else {
-          Show Completed
-        }
+        {{ showCompleted ? "Hide Completed" : "Show Completed" }}
       </button>
     </div>
   </div>
@@ -16,11 +13,8 @@
     <div class="col-2">Status</div>
     <div class="col-2"></div>
   </div>
-  @for (task of tasks; track task.id) {
-    <app-task-item [task]=task (removeTask)="removeTask($event)" (toggleTask)="toggleTask($event)"/>
-  }
-  <div class="mt-4">
-    <button (click)="newTask()" class="btn btn-outline-primary">New task</button>
+  <div class="task-list-content">
+      <app-task-item *ngFor="let task of tasks" [task]='task' (removeTask)="removeTask($event)"/>
   </div>
 </div>
 

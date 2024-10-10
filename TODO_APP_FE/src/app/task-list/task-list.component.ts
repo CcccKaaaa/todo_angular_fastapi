@@ -1,23 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { TaskItemComponent } from '../task-item/task-item.component';
 import { TaskService } from '../app.todo.service'
 import { TaskItem } from '../task-item';
+import { HandlerService } from '../../services/handler.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { take } from 'rxjs';
+import { NgFor, NgIf } from '@angular/common';
 
 
 @Component({
   selector: 'app-task-list',
   standalone: true,
-  imports: [TaskItemComponent, FormsModule],
+  imports: [TaskItemComponent, FormsModule, NgFor,NgIf],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.css'
 })
 export class TaskListComponent {
   tasks: TaskItem[] = []
   showCompleted: boolean = true
-
+  eventHandler = inject(HandlerService)
+  destroy$ = inject(DestroyRef)
   constructor(
     private taskService: TaskService,
     private router: Router) {}
@@ -25,6 +30,8 @@ export class TaskListComponent {
 
   ngOnInit(): void {
     this.showTasks()
+    this.eventHandler.datachange.pipe(takeUntilDestroyed(this.destroy$))
+    .subscribe(() => this.showTasks())
   }
 
   newTask() {
@@ -36,23 +43,16 @@ export class TaskListComponent {
   }
 
   showTasks() {
-    this.taskService.getTasks(this.showCompleted).subscribe((response) => {
+    this.taskService.getTasks(this.showCompleted).pipe(take(1))
+    .subscribe((response) => {
       this.tasks = response;
     });
   }
 
   removeTask(task_id: number) {
-    this.taskService.removeTask(task_id).subscribe((response) => {
+    this.taskService.removeTask(task_id).pipe(take(1)).subscribe((response) => {
       this.showTasks()
       this.router.navigate(['/task-form/create']);
-    });
-  }
-
-  toggleTask(task: any) {
-    console.log(task)
-    this.taskService.editTask(task).subscribe((response) => {
-      console.log(response)
-      this.showTasks()
     });
   }
 

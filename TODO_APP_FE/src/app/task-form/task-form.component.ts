@@ -1,9 +1,11 @@
-import { Component, Input } from '@angular/core';
-import { FormGroup, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
-import {  Router } from '@angular/router';
+import { Component, inject, Input } from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
+import { take } from 'rxjs';
+import { HandlerService } from '../../services/handler.service';
 import { TaskService } from '../app.todo.service';
-import { CreateTaskItem, TaskItem } from '../task-item';
+import { TaskItem } from '../task-item';
 
 @Component({
   selector: 'app-task-form',
@@ -21,7 +23,7 @@ export class TaskFormComponent {
   @Input()
   set id(task_id: string) {
     if (task_id) {
-      this.taskService.getTask(task_id).subscribe((response) => {
+      this.taskService.getTask(task_id).pipe(take(1)).subscribe((response) => {
         this.task = response || null
         if (this.task) {
           this.myTaskForm.disable()
@@ -38,6 +40,11 @@ export class TaskFormComponent {
   }
 
   _parseTaskVal(task:TaskItem){
+    /**
+   * Fillter out some value of task should not put in Form.
+   * @param {TaskItem} task - The task.
+   * @returns {object} - The value to set in Form
+   */
     return {
       title: task.title,
       description: task.description,
@@ -45,6 +52,8 @@ export class TaskFormComponent {
     }
   }
 
+
+  eventHandler = inject(HandlerService)
   constructor(private taskService: TaskService,
               private router: Router
   ) {
@@ -56,9 +65,17 @@ export class TaskFormComponent {
   }
 
   onSubmit() {
-    let resource = this.myTaskForm.value as CreateTaskItem;
-    this.myTaskForm.reset();
-    this.taskService.addTask(resource).subscribe(response => console.log(response));
+    const resource = {...this.myTaskForm.value };
+    this.taskService.addTask(resource)
+    .pipe(take(1)) // Memory leak
+      .subscribe({
+        next: response => {
+          this.myTaskForm.reset();
+        }, error: (error) => {
+          console.log(error);
+        }
+      });
+    this.eventHandler.updateData();
   }
 
   editTaskForm(){
@@ -76,8 +93,11 @@ export class TaskFormComponent {
         ...this.myTaskForm.value,
         id: this.task.id
       }
-      this.taskService.editTask(task_data).subscribe(response => console.log(response));
-      this.router.navigate(['/']);
+      this.taskService.editTask(task_data).pipe(take(1)).subscribe(response => {
+        console.log(response)
+        this.eventHandler.updateData();
+      });
+
     }
   }
 }

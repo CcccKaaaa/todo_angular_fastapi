@@ -11,4 +11,6 @@ import { TaskListComponent } from './task-list/task-list.component';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent { }
+export class AppComponent {
+  title = "TODO_APP_FE"
+ }
