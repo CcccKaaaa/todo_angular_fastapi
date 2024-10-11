@@ -1,16 +1,28 @@
-from typing import List
+import os
 
-from fastapi import Depends, FastAPI, HTTPException, Form, Request, Response
+
+import uvicorn
+from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 
-from base import crud, models, schemas
-from base.database import SessionLocal, engine
 
-models.Base.metadata.create_all(bind=engine)
+from todo_app.todo_api import todo_api
+from base.models import Base
+from base.database import engine
+import config
+
+
+# Set system timezone to UTC
+os.environ['TZ'] = 'UTC'
+root_router = APIRouter()
+
+root_router.include_router(todo_api)
+
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
+app.include_router(root_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,29 +32,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+def run():
+    uvicorn.run(app, host=config.server_interface, port=config.server_port)
 
-@app.get('/get-tasks/', response_model=List[schemas.Task])
-def get_tasks(db: Session = Depends(get_db), showCompleted: bool = True):
-    return crud.get_tasks(db, showCompleted)
-
-@app.get('/get-task/', response_model=schemas.Task)
-def get_tasks(db: Session = Depends(get_db), id: int = 0 ):
-    return crud.get_task(db, id)
-
-@app.post('/add-task', response_model=schemas.Task)
-def add_task(task:schemas.TaskCreate, db: Session = Depends(get_db)):
-    return crud.add_task(db, task)
-
-@app.post('/remove-task')
-def remove_task(task:schemas.TaskEdit, db: Session = Depends(get_db)):
-    return crud.remove_task(db, task.id)
-
-@app.post('/edit-task')
-def edit_task(task:schemas.TaskEdit, db: Session = Depends(get_db)):
-    return crud.edit_task(db, task)
+if __name__ == "__main__":
+    run()

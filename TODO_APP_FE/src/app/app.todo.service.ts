@@ -36,16 +36,18 @@ export class TaskService {
     );
   }
 
-  getTasks(showCompleted: boolean): Observable<TaskItem[]> {
-    let endPoint = this.APIURL + "get-tasks/";
+  getTasks(showCompleted?: boolean, task_id?: string, q?: string): Observable<TaskItem[]> {
+    let endPoint = this.APIURL + "get-tasks/?";
     if (!showCompleted) {
-      endPoint += "?showCompleted=false";
+      endPoint += "showCompleted=false";
+    }
+    if (task_id) {
+      endPoint += `&task_id=${task_id}`;
+    }
+    if (q) {
+      endPoint += `&q=${q}`
     }
     return this.makeJsonRequest<TaskItem[]>('GET', endPoint);
-  }
-
-  getTask(task_id: string): Observable<TaskItem> {
-    return this.makeJsonRequest<TaskItem>('GET', `${this.APIURL}get-task/?id=${task_id}`);
   }
 
   addTask(newTask: CreateTaskItem): Observable<TaskItem> {
@@ -53,7 +55,7 @@ export class TaskService {
   }
 
   removeTask(task_id: number): Observable<any> {
-    return this.makeJsonRequest<any>('POST', `${this.APIURL}remove-task`, { id: task_id });
+    return this.makeJsonRequest<any>('POST', `${this.APIURL}remove-task`, {task_id: task_id});
   }
 
   editTask(task: TaskItem): Observable<TaskItem> {

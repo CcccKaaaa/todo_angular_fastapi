@@ -1,5 +1,5 @@
 import { Component, DestroyRef, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { TaskItemComponent } from '../task-item/task-item.component';
@@ -21,6 +21,7 @@ import { NgFor, NgIf } from '@angular/common';
 export class TaskListComponent {
   tasks: TaskItem[] = []
   showCompleted: boolean = true
+  query: string = ''
   eventHandler = inject(HandlerService)
   destroy$ = inject(DestroyRef)
   constructor(

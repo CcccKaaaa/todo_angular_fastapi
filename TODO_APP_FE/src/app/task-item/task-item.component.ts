@@ -25,10 +25,9 @@ export class TaskItemComponent {
     this.removeTask.emit(taskId);
   }
 
-  toggleTaskItem(taskId: number) {
+  toggleTaskItem() {
     this.task.completed = ! this.task.completed
-    const task_val = {id: taskId, completed: this.task.completed}
-    this.taskService.editTask(task_val).pipe(take(1)).subscribe((response) => {
+    this.taskService.editTask(this.task).pipe(take(1)).subscribe((response) => {
       console.log(response)
     })
   }

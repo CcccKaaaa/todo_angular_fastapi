@@ -23,8 +23,8 @@ export class TaskFormComponent {
   @Input()
   set id(task_id: string) {
     if (task_id) {
-      this.taskService.getTask(task_id).pipe(take(1)).subscribe((response) => {
-        this.task = response || null
+      this.taskService.getTasks(true, task_id).pipe(take(1)).subscribe((response) => {
+        this.task = response && response[0] || null
         if (this.task) {
           this.myTaskForm.disable()
           const task_val = this._parseTaskVal(this.task)
