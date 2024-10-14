@@ -1,6 +1,5 @@
 import { Component, inject, Input } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 
 import { take } from 'rxjs';
 import { HandlerService } from '../../services/handler.service';
@@ -29,8 +28,6 @@ export class TaskFormComponent {
         if (this.task) {
           this.myTaskForm.disable()
           const task_val = this._parseTaskVal(this.task)
-          console.log(this.task.id)
-          console.log(task_id)
           this.myTaskForm.setValue(task_val)
         }
       });
@@ -53,11 +50,9 @@ export class TaskFormComponent {
     }
   }
 
-
   eventHandler = inject(HandlerService)
-  constructor(private taskService: TaskService,
-              private router: Router
-  ) {
+
+  constructor(private taskService: TaskService) {
     this.myTaskForm = new FormGroup({
       title: new FormControl<string>('', Validators.required),
       description: new FormControl<string|null>(null),
@@ -82,8 +77,6 @@ export class TaskFormComponent {
   editTaskForm(){
     if (this.task) {
       this.myTaskForm.enable()
-      const task_val = this._parseTaskVal(this.task)
-      this.myTaskForm.setValue(task_val)
     }
   }
 
@@ -95,8 +88,10 @@ export class TaskFormComponent {
         id: this.task.id
       }
       this.taskService.editTask(task_data).pipe(take(1)).subscribe(response => {
-        console.log(response)
-        this.eventHandler.updateData();
+        if (response) {
+          this.task = response
+          this.eventHandler.updateData();
+        }
       });
 
     }
