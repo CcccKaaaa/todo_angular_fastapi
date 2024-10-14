@@ -6,7 +6,7 @@ import { throwError, Observable } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
-  APIURL = "http://localhost:8000/";
+  APIURL = "http://localhost:8000/api/";
 
   // JSON headers
   httpOptions = {
@@ -36,18 +36,8 @@ export class TaskService {
     );
   }
 
-  getTasks(showCompleted?: boolean, task_id?: string, q?: string): Observable<TaskItem[]> {
-    let endPoint = this.APIURL + "get-tasks/?";
-    if (!showCompleted) {
-      endPoint += "showCompleted=false";
-    }
-    if (task_id) {
-      endPoint += `&task_id=${task_id}`;
-    }
-    if (q) {
-      endPoint += `&q=${q}`
-    }
-    return this.makeJsonRequest<TaskItem[]>('GET', endPoint);
+  getTasks(taskfilter: string): Observable<TaskItem[]> {
+    return this.makeJsonRequest<TaskItem[]>('GET', this.APIURL + 'get-tasks/?' + taskfilter);
   }
 
   addTask(newTask: CreateTaskItem): Observable<TaskItem> {

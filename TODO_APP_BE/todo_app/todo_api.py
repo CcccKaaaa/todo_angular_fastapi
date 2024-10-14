@@ -8,7 +8,7 @@ from typing_extensions import Annotated
 from base.http.middleware import Request, session_handler
 from todo_app.todo_models import Task
 
-todo_api = APIRouter()
+todo_api = APIRouter(prefix='/api')
 
 class TaskBase(BaseModel):
     id: int | None = None

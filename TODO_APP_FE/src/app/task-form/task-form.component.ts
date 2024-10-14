@@ -22,8 +22,9 @@ export class TaskFormComponent {
 
   @Input()
   set id(task_id: string) {
+    const taskfilter = `task_id=${task_id}`
     if (task_id) {
-      this.taskService.getTasks(true, task_id).pipe(take(1)).subscribe((response) => {
+      this.taskService.getTasks(taskfilter).pipe(take(1)).subscribe((response) => {
         this.task = response && response[0] || null
         if (this.task) {
           this.myTaskForm.disable()

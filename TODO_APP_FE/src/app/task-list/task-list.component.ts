@@ -44,10 +44,22 @@ export class TaskListComponent {
   }
 
   showTasks() {
-    this.taskService.getTasks(this.showCompleted).pipe(take(1))
+    const taskfilter = this._prepareTaskFilter(this.showCompleted, this.query)
+    this.taskService.getTasks(taskfilter).pipe(take(1))
     .subscribe((response) => {
       this.tasks = response;
     });
+  }
+
+  _prepareTaskFilter(showCompleted: boolean, q: string) {
+    let taskfilter = "";
+    if (!showCompleted) {
+      taskfilter += "showCompleted=false";
+    }
+    if (q) {
+      taskfilter += `&q=${q}`
+    }
+    return taskfilter
   }
 
   removeTask(task_id: number) {
@@ -61,4 +73,16 @@ export class TaskListComponent {
     this.showCompleted = ! this.showCompleted
     this.showTasks()
   }
+
+  keyUpSearchBox(event: KeyboardEvent) {
+    if (event.key === "Enter") {
+      this.showTasks()
+    }
+  }
+
+  clearSearchFilter() {
+    this.query = ''
+    this.showTasks()
+  }
+
 }
