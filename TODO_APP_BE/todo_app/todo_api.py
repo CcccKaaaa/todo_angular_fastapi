@@ -11,17 +11,19 @@ from todo_app.todo_models import Task
 todo_api = APIRouter(prefix='/api')
 
 class TaskBase(BaseModel):
-    id: int | None = None
     title: str
     description: str | None = None
     due_date: datetime | None = None
     completed: bool = False
 
-class RequestTask(TaskBase):
+class RequestCreate(TaskBase):
+    pass
+
+class RequestUpdateTask(TaskBase):
     pass
 
 class ReponseTask(TaskBase):
-    pass
+    id: int
 
 class FilterParams(BaseModel):
     showCompleted: bool = True
@@ -43,7 +45,7 @@ def get_tasks(request: Request, search_query: Annotated[FilterParams, Query()]):
 
 @todo_api.post('/task/', response_model=ReponseTask)
 @session_handler
-def add_task(request: Request, payloads: RequestTask):
+def add_task(request: Request, payloads: RequestCreate):
     result = _get_model(request).add_task(payloads.model_dump())
     return result
 
@@ -55,6 +57,6 @@ def remove_task(request: Request, task_id: int):
 
 @todo_api.put('/task/{task_id}')
 @session_handler
-def edit_task(request: Request, task_id:int, payloads: RequestTask):
-    result = _get_model(request).edit_task(payloads.model_dump())
+def edit_task(request: Request, task_id:int, payloads: RequestUpdateTask):
+    result = _get_model(request).edit_task(task_id, payloads.model_dump())
     return result

@@ -35,10 +35,7 @@ class Task(Base):
 
         return task.delete()
 
-    def edit_task(self, val: dict):
-        edit_val = val.copy()
-        task_id = edit_val.pop('id', None)
-
+    def edit_task(self, task_id, val: dict):
         if not task_id:
             raise ValidationError("Task ID is required for editing.")
 
@@ -46,4 +43,4 @@ class Task(Base):
         if not task:
             raise RecordNotFoundError(f"Task with id {task_id} not found.")
 
-        return task.update(edit_val)
+        return task.update(val)
