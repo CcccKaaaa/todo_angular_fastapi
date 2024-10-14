@@ -1,19 +1,7 @@
 from sqlalchemy import Boolean, Column, DateTime, String
-from sqlalchemy.exc import SQLAlchemyError
 
 from base.models import Base
-from base.exceptions import AccessError, RecordNotFoundError, ValidationError, UserError
-
-# Define a decorator for exception handling
-def handle_exceptions(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except SQLAlchemyError as e:
-            raise AccessError(f"Database error occurred: {e}")
-        except Exception as e:
-            raise UserError(f"Unexpected error: {e}")
-    return wrapper
+from base.exceptions import RecordNotFoundError, ValidationError, UserError
 
 class Task(Base):
     __tablename__ = "tasks"
@@ -23,26 +11,23 @@ class Task(Base):
     completed = Column(Boolean, default=False, nullable=False)
     due_date = Column(DateTime)
 
-    @handle_exceptions
-    def get_tasks(self, showCompleted: Boolean = True, task_id: int = 0, q: str = ''):
+    def get_tasks(self, showCompleted: Boolean = True, task_id: int = 0, q: str = '', order: str = None, offset: int = 0, limit: int = None):
         task_filter = [] if showCompleted else [Task.completed == showCompleted]
         if task_id:
             task_filter.append(Task.id == task_id)
         if q:
             task_filter.append(Task.title.like(f"%{q}%"))
-        tasks = self.search(filters=task_filter)
+        tasks = self.search(filters=task_filter, order=order, offset=offset, limit=limit)
         return tasks
 
-    @handle_exceptions
     def add_task(self, create_val: dict):
         create_val.pop('id', None)  # Safely remove 'id' if it exists
 
         if not create_val.get('title'):
-            raise ValidationError("Task must have a title.")
+            raise UserError("Task must have a title.")
 
         return self.create(create_val)
 
-    @handle_exceptions
     def remove_task(self, task_id) -> bool:
         task = self.browse(task_id)
         if not task:
@@ -50,7 +35,6 @@ class Task(Base):
 
         return task.delete()
 
-    @handle_exceptions
     def edit_task(self, val: dict):
         edit_val = val.copy()
         task_id = edit_val.pop('id', None)

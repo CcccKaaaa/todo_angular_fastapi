@@ -27,17 +27,21 @@ class FilterParams(BaseModel):
     showCompleted: bool = True
     task_id: int = 0
     q: str = ''
+    order: str = ''
+    offset: int = 0
+    limit: int = 80
 
 def _get_model(request) -> Task:
     return request.env['tasks']
 
 @todo_api.get('/task/', response_model=List[ReponseTask])
 @session_handler
-def get_tasks(request: Request, filter_query: Annotated[FilterParams, Query()]):
-    result = _get_model(request).get_tasks(filter_query.showCompleted, filter_query.task_id, filter_query.q)
+def get_tasks(request: Request, search_query: Annotated[FilterParams, Query()]):
+    result = _get_model(request).get_tasks(search_query.showCompleted, search_query.task_id, search_query.q, 
+                                           search_query.order, search_query.offset, search_query.limit)
     return result
 
-@todo_api.post('/task/create', response_model=ReponseTask)
+@todo_api.post('/task/', response_model=ReponseTask)
 @session_handler
 def add_task(request: Request, payloads: RequestTask):
     result = _get_model(request).add_task(payloads.model_dump())

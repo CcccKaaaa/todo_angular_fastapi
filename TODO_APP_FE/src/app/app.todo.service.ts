@@ -45,12 +45,12 @@ export class TaskService {
   }
 
 
-  getTasks(taskfilter: string): Observable<TaskItem[]> {
-    return this.makeJsonRequest<TaskItem[]>('GET', this.APIURL + 'task/?' + taskfilter);
+  getTasks(taskSearchParam: string): Observable<TaskItem[]> {
+    return this.makeJsonRequest<TaskItem[]>('GET', this.APIURL + 'task/?' + taskSearchParam);
   }
 
   addTask(newTask: CreateTaskItem): Observable<TaskItem> {
-    return this.makeJsonRequest<TaskItem>('POST', `${this.APIURL}task/create`, newTask);
+    return this.makeJsonRequest<TaskItem>('POST', `${this.APIURL}task/`, newTask);
   }
 
   removeTask(task_id: number): Observable<any> {
