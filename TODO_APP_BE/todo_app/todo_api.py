@@ -25,6 +25,10 @@ class RequestUpdateTask(TaskBase):
 class ReponseTask(TaskBase):
     id: int
 
+class ResponseTaskList(BaseModel):
+    length: int
+    records: List[ReponseTask]
+
 class FilterParams(BaseModel):
     showCompleted: bool = True
     task_id: int = 0
@@ -36,7 +40,7 @@ class FilterParams(BaseModel):
 def _get_model(request) -> Task:
     return request.env['tasks']
 
-@todo_api.get('/task/', response_model=List[ReponseTask])
+@todo_api.get('/task/', response_model=ResponseTaskList)
 @session_handler
 def get_tasks(request: Request, search_query: Annotated[FilterParams, Query()]):
     result = _get_model(request).get_tasks(search_query.showCompleted, search_query.task_id, search_query.q, 

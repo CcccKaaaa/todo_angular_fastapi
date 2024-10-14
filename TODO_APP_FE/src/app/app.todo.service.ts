@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { TaskItem, CreateTaskItem } from './task-item';
+import { TaskItem, CreateTaskItem, TaskListResponse } from './task-item';
 import { catchError } from 'rxjs/operators';
 import { throwError, Observable } from 'rxjs';
 
@@ -45,8 +45,8 @@ export class TaskService {
   }
 
 
-  getTasks(taskSearchParam: string): Observable<TaskItem[]> {
-    return this.makeJsonRequest<TaskItem[]>('GET', this.APIURL + 'task/?' + taskSearchParam);
+  getTasks(taskSearchParam: string): Observable<TaskListResponse> {
+    return this.makeJsonRequest<TaskListResponse>('GET', this.APIURL + 'task/?' + taskSearchParam);
   }
 
   addTask(newTask: CreateTaskItem): Observable<TaskItem> {

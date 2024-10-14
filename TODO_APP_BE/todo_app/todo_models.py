@@ -17,8 +17,12 @@ class Task(Base):
             task_filter.append(Task.id == task_id)
         if q:
             task_filter.append(Task.title.like(f"%{q}%"))
+        tasks_count = self.search_count(filters=task_filter)
         tasks = self.search(filters=task_filter, order=order, offset=offset, limit=limit)
-        return tasks
+        return {
+            'length': tasks_count,
+            'records': tasks,
+        }
 
     def add_task(self, create_val: dict):
         create_val.pop('id', None)  # Safely remove 'id' if it exists

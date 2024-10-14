@@ -11,3 +11,8 @@ export interface CreateTaskItem {
   description?: string;
   due_date?: Date;
 }
+
+export interface TaskListResponse {
+  length: number;
+  records: TaskItem[];
+}

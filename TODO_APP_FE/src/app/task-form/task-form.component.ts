@@ -25,7 +25,7 @@ export class TaskFormComponent {
     const taskSearchParam = `task_id=${task_id}`
     if (task_id) {
       this.taskService.getTasks(taskSearchParam).pipe(take(1)).subscribe((response) => {
-        this.task = response && response[0] || null
+        this.task = response.records && response.records[0] || null
         if (this.task) {
           this.myTaskForm.disable()
           const task_val = this._parseTaskVal(this.task)

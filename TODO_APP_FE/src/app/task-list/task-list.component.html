@@ -1,5 +1,7 @@
 <div class="p-3" style="height:60vh">
   <div class="row justify-content-center h4 mb-4"><b>Task List</b></div>
+
+  <!-- Controller -->
   <div class="row pl-4 pr-3 mb-3">
     <div class="col-4 pl-0">
       <button (click)="newTask()" class="btn btn-outline-primary mr-3">New task</button>
@@ -26,6 +28,10 @@
       </div>
     </div>
   </div>
+
+
+
+  <!-- Task list -->
   <div class="row p-2 border-bottom h5 mb-0">
     <div class="col-8 font-weight-bold">Task title</div>
     <div class="col-2 font-weight-bold">Status</div>
@@ -34,6 +40,19 @@
 
   <div class="task-list-content">
       <app-task-item *ngFor="let task of tasks" [task]='task' (removeTask)="removeTask($event)"/>
+  </div>
+
+  <!-- Paging -->
+  <div class="row align-items-center">
+    <div class="ml-4">
+      <span>{{ offset + 1 }} - {{ offset + limit > length ? length : offset + limit }} / {{ length }}</span>
+        <button class="btn btn-outline-info mx-2" (click)="navigate(-1)" [disabled]="offset === 0">
+          <i class="fa fa-caret-left" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-outline-info" (click)="navigate(1)" [disabled]="offset + limit >= length">
+          <i class="fa fa-caret-right" aria-hidden="true"></i>
+        </button>
+    </div>
   </div>
 </div>
 

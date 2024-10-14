@@ -1,6 +1,7 @@
 import { Component, DestroyRef, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { take } from 'rxjs';
 import { NgFor, NgIf } from '@angular/common';
@@ -24,12 +25,16 @@ export class TaskListComponent {
   showCompleted: boolean = true
   ascendingDueDate: boolean | null = null
   query: string = ''
+  offset: number = 0
+  limit: number = 5
+  length: number = 0
+
   eventHandler = inject(HandlerService)
   destroy$ = inject(DestroyRef)
+
   constructor(
     private taskService: TaskService,
     private router: Router) {}
-
 
   ngOnInit(): void {
     this.showTasks()
@@ -46,20 +51,21 @@ export class TaskListComponent {
   }
 
   showTasks() {
-    const taskSearchParam = this._prepareTaskSearchParam(this.showCompleted, this.query)
+    const taskSearchParam = this._prepareTaskSearchParam()
     this.taskService.getTasks(taskSearchParam).pipe(take(1))
     .subscribe((response) => {
-      this.tasks = response;
+      this.tasks = response.records;
+      this.length = response.length;
     });
   }
 
-  _prepareTaskSearchParam(showCompleted: boolean, q: string) {
-    let taskSearchParam = "";
-    if (!showCompleted) {
+  _prepareTaskSearchParam() {
+    let taskSearchParam = `&offset=${this.offset}&limit=${this.limit}`;
+    if (!this.showCompleted) {
       taskSearchParam += "&showCompleted=false";
     }
-    if (q) {
-      taskSearchParam += `&q=${q}`
+    if (this.query) {
+      taskSearchParam += `&q=${this.query}`
     }
     if (this.ascendingDueDate === false) {
       taskSearchParam += `&order=due_date desc`
@@ -97,4 +103,14 @@ export class TaskListComponent {
     this.showTasks()
   }
 
+
+  navigate(direction: -1 | 1) {
+    const newOffset = this.offset + direction * this.limit;
+
+    // Ensure the new offset doesn't go below 0 or exceed the total length
+    if (newOffset >= 0 && newOffset < this.length) {
+      this.offset = newOffset;
+    }
+    this.showTasks()
+  }
 }
