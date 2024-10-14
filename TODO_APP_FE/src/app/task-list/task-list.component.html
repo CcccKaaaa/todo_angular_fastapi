@@ -1,5 +1,5 @@
-<div class="p-3" style="height:50vh">
-  <div class="row justify-content-center h4 mb-4"><b>TASKS</b></div>
+<div class="p-3" style="height:60vh">
+  <div class="row justify-content-center h4 mb-4"><b>Task List</b></div>
   <div class="row pl-4 pr-3 mb-3">
     <div class="col-6 pl-0">
       <button (click)="newTask()" class="btn btn-outline-primary mr-3">New task</button>
@@ -15,11 +15,12 @@
       </div>
     </div>
   </div>
-  <div class="row p-2 border-bottom h5 mb-0 bolder">
-    <div class="col-8">Task title</div>
-    <div class="col-2">Status</div>
+  <div class="row p-2 border-bottom h5 mb-0">
+    <div class="col-8 font-weight-bold">Task title</div>
+    <div class="col-2 font-weight-bold">Status</div>
     <div class="col-2"></div>
   </div>
+
   <div class="task-list-content">
       <app-task-item *ngFor="let task of tasks" [task]='task' (removeTask)="removeTask($event)"/>
   </div>

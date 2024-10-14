@@ -43,8 +43,8 @@ class Task(Base):
         return self.create(create_val)
 
     @handle_exceptions
-    def remove_task(self, task: dict) -> bool:
-        task = self.browse(task.get('task_id'))
+    def remove_task(self, task_id) -> bool:
+        task = self.browse(task_id)
         if not task:
             raise RecordNotFoundError(f"Task with id {task_id} not found.")
 

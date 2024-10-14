@@ -17,17 +17,25 @@ export class TaskService {
 
   constructor(private http: HttpClient) {}
 
-  // Function to handle JSON requests and errors
   private makeJsonRequest<T>(method: string, url: string, body?: any): Observable<T> {
     let httpCall: Observable<T>;
 
     // Make the appropriate HTTP call based on the method
-    if (method === 'GET') {
-      httpCall = this.http.get<T>(url, this.httpOptions);
-    } else if (method === 'POST') {
-      httpCall = this.http.post<T>(url, JSON.stringify(body), this.httpOptions);
-    } else {
-      throw new Error('Unsupported HTTP method');
+    switch (method) {
+      case 'GET':
+        httpCall = this.http.get<T>(url, this.httpOptions);
+        break;
+      case 'POST':
+        httpCall = this.http.post<T>(url, JSON.stringify(body), this.httpOptions);
+        break;
+      case 'PUT':
+        httpCall = this.http.put<T>(url, JSON.stringify(body), this.httpOptions);
+        break;
+      case 'DELETE':
+        httpCall = this.http.delete<T>(url, this.httpOptions);
+        break;
+      default:
+        throw new Error('Unsupported HTTP method');
     }
 
     // Apply error handling
@@ -36,20 +44,21 @@ export class TaskService {
     );
   }
 
+
   getTasks(taskfilter: string): Observable<TaskItem[]> {
-    return this.makeJsonRequest<TaskItem[]>('GET', this.APIURL + 'get-tasks/?' + taskfilter);
+    return this.makeJsonRequest<TaskItem[]>('GET', this.APIURL + 'task/?' + taskfilter);
   }
 
   addTask(newTask: CreateTaskItem): Observable<TaskItem> {
-    return this.makeJsonRequest<TaskItem>('POST', `${this.APIURL}add-task`, newTask);
+    return this.makeJsonRequest<TaskItem>('POST', `${this.APIURL}task/create`, newTask);
   }
 
   removeTask(task_id: number): Observable<any> {
-    return this.makeJsonRequest<any>('POST', `${this.APIURL}remove-task`, {task_id: task_id});
+    return this.makeJsonRequest<any>('DELETE', `${this.APIURL}task/${task_id}`);
   }
 
   editTask(task: TaskItem): Observable<TaskItem> {
-    return this.makeJsonRequest<TaskItem>('POST', `${this.APIURL}edit-task`, task);
+    return this.makeJsonRequest<TaskItem>('PUT', `${this.APIURL}task/${task.id}`, task);
   }
 
   // Centralized error handler

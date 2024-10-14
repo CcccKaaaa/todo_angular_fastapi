@@ -65,7 +65,7 @@ export class TaskListComponent {
   removeTask(task_id: number) {
     this.taskService.removeTask(task_id).pipe(take(1)).subscribe((response) => {
       this.showTasks()
-      this.router.navigate(['/task-form/create']);
+      this.router.navigate(['/']);
     });
   }
 
