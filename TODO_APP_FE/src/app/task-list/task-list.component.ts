@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject } from '@angular/core';
+import { Component, DestroyRef, inject, output } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -46,10 +46,6 @@ export class TaskListComponent {
     this.router.navigate(['/task-form/create']);
   }
 
-  gotoItems(taskId: number) {
-    this.router.navigate(['/task-form', { id: taskId }]);
-  }
-
   showTasks() {
     const taskSearchParam = this._prepareTaskSearchParam()
     this.taskService.getTasks(taskSearchParam).pipe(take(1))
@@ -89,8 +85,13 @@ export class TaskListComponent {
 
   keyUpSearchBox(event: KeyboardEvent) {
     if (event.key === "Enter") {
-      this.showTasks()
+      this.performSearch()
     }
+  }
+
+  performSearch() {
+    this.offset = 0
+    this.showTasks()
   }
 
   clearSearchFilter() {

@@ -4,6 +4,16 @@ Todo App with FastAPI and Angular
 ## Description
 Todo App using SQLAlchemy for ORM & FastAPI for communication between application & network, Angular for front end.
 
+## Requirements
+
+This project runs in a Dockerized environment, so there’s no need to manually install Python or Node.js.
+
+The Docker environment is configured with the following versions:
+- **Python**: Defined in the `Dockerfile` (`PYTHON_VERSION=3.11.10`)
+- **Node.js**: Defined in the `Dockerfile` (`NODE_VERSION=18.x.x`)
+
+For local development or debugging outside Docker, ensure you have compatible versions installed.
+
 ## Installation
 
 1. Create .env file

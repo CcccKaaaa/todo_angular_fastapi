@@ -1,16 +1,16 @@
 
 <div class="row p-2 border-bottom align-items-center">
-  <div class="col-8 task-title" [routerLink]="['task-form/', task.id]">
+  <div class="col-8 task-title mb-2" [routerLink]="['task-form/', task.id]">
     {{ task.title }}
   </div>
-  <div class="col-2">
+  <div class="col-2" style="min-width: fit-content;">
     @if (task.completed) {
       <div class="badge badge-success">Completed</div>
     } @else {
       <div class="badge badge-secondary">Not Completed</div>
     }
   </div>
-  <div class="col-2 d-flex justify-content-center">
+  <div class="d-flex justify-content-center mx-3">
       @if (task.completed) {
         <button (click)="toggleTaskItem()" class="btn btn-sm btn-warning"><i class="fa fa-minus-circle" aria-hidden="true"></i></button>
       } @else {
