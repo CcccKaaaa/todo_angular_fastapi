@@ -17,6 +17,7 @@ export class TaskItemComponent {
   editable = false;
   removeTask = output<number>();
   toggleTask = output<TaskItem>();
+  
   @Input() task!: TaskItem;
 
   constructor(private taskService: TaskService) {}
